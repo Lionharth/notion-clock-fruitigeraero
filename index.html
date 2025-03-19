@@ -3,17 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Vibrant Green & Blue Clock</title>
-  <!-- If you have the Fruitiger font file, include it here -->
-  <!--
   <style>
-    @font-face {
-      font-family: 'Fruitiger';
-      src: url('path/to/Fruitiger.ttf') format('truetype');
-    }
-  </style>
-  -->
-  <style>
-    /* Full-window layout with a vibrant green and blue gradient background */
     html, body {
       margin: 0;
       padding: 0;
@@ -24,9 +14,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Fruitiger', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    /* Scalable clock container with glassmorphism effect */
     .clock {
       width: 90vw;
       height: 90vh;
@@ -44,7 +33,6 @@
       padding: 2vw;
       box-sizing: border-box;
     }
-    /* Responsive time display styling */
     .time {
       font-size: 10vw;
       letter-spacing: 0.5vw;
@@ -53,7 +41,6 @@
       color: #fff;
       text-shadow: 0 0.2vw 0.5vw rgba(0, 0, 0, 0.3);
     }
-    /* Responsive date display styling */
     .date {
       font-size: 3vw;
       margin-top: 1vw;
@@ -62,16 +49,30 @@
       opacity: 0.9;
       text-shadow: 0 0.1vw 0.3vw rgba(0, 0, 0, 0.3);
     }
+    .week {
+      font-size: 2.5vw;
+      margin-top: 0.5vw;
+      color: #fff;
+      opacity: 0.85;
+      text-shadow: 0 0.1vw 0.3vw rgba(0, 0, 0, 0.3);
+    }
   </style>
 </head>
 <body>
   <div class="clock">
     <div class="time" id="time">00:00:00</div>
     <div class="date" id="date">Loading date...</div>
+    <div class="week" id="week">Week: --</div>
   </div>
 
   <script>
-    // Function to update the clock and date every second
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+      var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    }
+    
     function updateClock() {
       const now = new Date();
       const hours = String(now.getHours()).padStart(2, '0');
@@ -79,12 +80,12 @@
       const seconds = String(now.getSeconds()).padStart(2, '0');
       document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
       
-      // Display full date with weekday, month, day, and year
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       document.getElementById('date').textContent = now.toLocaleDateString(undefined, options);
+      
+      document.getElementById('week').textContent = `Week: ${getWeekNumber(now)}`;
     }
     
-    // Initialize clock and update every second
     updateClock();
     setInterval(updateClock, 1000);
   </script>
